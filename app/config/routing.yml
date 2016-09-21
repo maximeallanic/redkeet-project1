@@ -1,0 +1,12 @@
+# @Author: Maxime Allanic <mallanic>
+# @Date:   21/09/2016
+# @Email:  maxime@allanic.me
+# @Last modified by:   mallanic
+# @Last modified time: 21/09/2016
+
+
+
+redkeet:
+    resource: "@RedkeetBundle/Controller/"
+    type:     annotation
+    prefix:   /
