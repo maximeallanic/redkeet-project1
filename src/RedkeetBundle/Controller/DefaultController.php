@@ -21,12 +21,17 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+      /* Get Actual Time **/
       $now = new DateTime();
-      $christmas = new DateTime($now->format('Y')."-12-24 0:0:0");
-      $diff = $now->diff($christmas);
 
+      /** Get Time since Christmas of this year **/
+      $christmas = new DateTime($now->format('Y')."-12-24 0:0:0");
+
+      /** If date is after 24 December of this year, pass to next year **/
+      $diff = $now->diff($christmas);
       if ($diff->format('%R') == '-')
         $christmas->setDate($christmas->format('Y') + 1, $christmas->format('m'), $christmas->format('d'));
+
       return $this->render('RedkeetBundle:Default:index.html.twig', array(
         "christmas" => $christmas
       ));
@@ -37,7 +42,9 @@ class DefaultController extends Controller
      */
     public function christmasAction(Request $request)
     {
+      /** Transfert Param Request to JS **/
       $christmasTimeLeft = $request->get('christmas');
+      
       return $this->render('RedkeetBundle:Default:christmas.html.twig', array(
         "christmas" => $christmasTimeLeft
       ));

@@ -19,11 +19,16 @@
     <a href="{{ path('index')}}">Retourner au début</a>
     <script>
 
-      var timeSince = moment.unix();
+      /** Select All Time Span **/
       var elements = document.querySelectorAll('#time > *');
-      function time() {
-        var diff = moment.duration(moment({{ christmas }} * 1000).diff(moment()));
 
+      /** Get Christmas date from Param Request **/
+      var christmas = moment({{ christmas }} * 1000);
+
+      function time() {
+        var diff = moment.duration(christmas.diff(moment()));
+
+        /** Set Date from attribute and diff **/
         for (var i = 0; i < elements.length; i++) {
           var format = elements[i].getAttribute('time');
           switch (format) {
@@ -51,6 +56,7 @@
           elements[i].innerHTML = $output;
         }
       }
+      /** Update Time every second and run in first **/
       setInterval(time, 1000);
       time();
     </script>
