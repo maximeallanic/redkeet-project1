@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <script src="{{ asset('/node_modules/moment/moment.js') }}"></script>
+    <style>
+      #time > p {
+      }
+    </style>
+  </head>
+  <body>
+		{% for event in events %}
+			<h4>{{ event.name }}</h4>
+
+			<div class="time" time="{{ event.date.getTimestamp() }}">
+				<h5 class="labelTimeOut"></h5>
+				<span format="FullYear"></span> Année(s)
+				<span format="Month"></span> Mois
+				<span format="Date"></span> Jour(s)
+				<span format="Hours"></span> Heure(s)
+				<span format="Minutes"></span> Minute(s)
+				<span format="Seconds"></span> Seconde(s)
+			</div>
+		{% endfor %}
+    <a href="{{ path('index')}}">Retourner au début</a>
+    <script>
+
+      /** Select All Time Span **/
+      var elements = document.querySelectorAll('.time');
+
+      /** Get Christmas date from Param Request **/
+    //  var christmas = moment( * 1000);
+
+      function time() {
+        //var diff = moment.duration(christmas.diff(moment()));
+
+        /** Set Date from attribute and diff **/
+        for (var i = 0; i < elements.length; i++) {
+
+          var time = elements[i].getAttribute('time');
+					time = moment(time * 1000);
+					var diff = moment.duration(time.diff(moment()));
+					var subElements = elements[i].querySelectorAll('span');
+					for (var y = 0; y < subElements.length; y++) {
+						var format = subElements[y].getAttribute('format');
+						switch (format) {
+	            case 'FullYear':
+	              $output = diff.years();
+	              break;
+	            case 'Month':
+	              $output = diff.months();
+	              break;
+	            case 'Date':
+	              $output = diff.days();
+	              break;
+	            case 'Hours':
+	              $output = diff.hours();
+	              break;
+	            case 'Minutes':
+	              $output = diff.minutes();
+	              break;
+	            case 'Seconds':
+	              $output = diff.seconds();
+	              break;
+	            default:
+	              $output = "0";
+	          }
+						subElements[y].innerHTML = Math.abs($output);
+						if ($output < 0)
+							elements[i].querySelectorAll('.labelTimeOut')[0].innerHTML = "Temps Ecoulé";
+						else
+							elements[i].querySelectorAll('.labelTimeOut')[0].innerHTML = "Temps Restant";
+					}
+        }
+      }
+      /** Update Time every second and run in first **/
+      setInterval(time, 1000);
+      time();
+    </script>
+  </body>
+</html>

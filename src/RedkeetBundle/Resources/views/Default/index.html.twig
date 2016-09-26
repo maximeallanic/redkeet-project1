@@ -3,11 +3,9 @@
     <title>Christmas</title>
   </head>
   <body>
-    <form action="{{ path('christmas') }}">
-      <h4>Noël</h4>
-      <h5>{{ christmas.format('Y/m/d') }} à {{ christmas.format('G:i:s') }}</h5>
-      <input type="hidden" name="christmas" value="{{ christmas.getTimeStamp() }}"/>
-      <input type="submit" value="Obtenir le temps Restant"/>
-    </form>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
   </body>
 </html>
+	

@@ -5,48 +5,71 @@
 @Date:   21/09/2016
 @Email:  maxime@allanic.me
 @Last modified by:   mallanic
-@Last modified time: 21/09/2016
+@Last modified time: 26/09/2016
 */
 namespace RedkeetBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use DateTime;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
+use Symfony\Component\Form\Tests\Extension\Core\Type\DateTimeTypeTest;
+
 use Symfony\Component\HttpFoundation\Request;
-use \DateTime;
+
+use RedkeetBundle\Entity\Event;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="index")
+     * @param Request $request
+		 * @return string
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-      /* Get Actual Time **/
-      $now = new DateTime();
+			$event = new Event();
+      $form = $this->createFormBuilder($event)
+				->add('name')
+				->add('date')
+        ->add('add', SubmitType::class, array('label' => "Ajouter"))
+				->getForm();
 
-      /** Get Time since Christmas of this year **/
-      $christmas = new DateTime($now->format('Y')."-12-24 0:0:0");
+      $form->handleRequest($request);
+      if ($form->isSubmitted() && $form->isValid()) {
+				$task = $form->getData();
 
-      /** If date is after 24 December of this year, pass to next year **/
-      $diff = $now->diff($christmas);
-      if ($diff->format('%R') == '-')
-        $christmas->setDate($christmas->format('Y') + 1, $christmas->format('m'), $christmas->format('d'));
+				$em = $this->getDoctrine()->getManager();
 
+		    // tells Doctrine you want to (eventually) save the Product (no queries yet)
+		    $em->persist($task);
+
+		    // actually executes the queries (i.e. the INSERT query)
+		    $em->flush();
+        return $this->redirectToRoute('events');
+      }
       return $this->render('RedkeetBundle:Default:index.html.twig', array(
-        "christmas" => $christmas
+        "form" => $form->createView()
       ));
     }
 
     /**
-     *  @Route("/christmas", name="christmas")
+     *  @Route("/event", name="events")
      */
-    public function christmasAction(Request $request)
+    public function eventsAction(Request $request)
     {
-      /** Transfert Param Request to JS **/
-      $christmasTimeLeft = $request->get('christmas');
-      
-      return $this->render('RedkeetBundle:Default:christmas.html.twig', array(
-        "christmas" => $christmasTimeLeft
+			$events =  $this->getDoctrine()
+        ->getRepository('RedkeetBundle:Event')
+        ->findAll();
+
+      return $this->render('RedkeetBundle:Default:events.html.twig', array(
+        "events" => $events
       ));
     }
 }
