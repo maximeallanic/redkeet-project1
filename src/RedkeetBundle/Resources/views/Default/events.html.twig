@@ -23,21 +23,24 @@
     <a href="{{ path('index')}}">Retourner au début</a>
     <script>
 
-      /** Select All Time Span **/
+      /** Select All Time Block **/
       var elements = document.querySelectorAll('.time');
 
-      /** Get Christmas date from Param Request **/
-    //  var christmas = moment( * 1000);
-
       function time() {
-        //var diff = moment.duration(christmas.diff(moment()));
 
-        /** Set Date from attribute and diff **/
+        /** For Each Event, update timeout **/
         for (var i = 0; i < elements.length; i++) {
 
+          /** Get Time Attribute **/
           var time = elements[i].getAttribute('time');
+
+          /** Convert it to Moment Object **/
 					time = moment(time * 1000);
+
+          /** Get duration from now **/
 					var diff = moment.duration(time.diff(moment()));
+
+          /** For Each span update from duration **/
 					var subElements = elements[i].querySelectorAll('span');
 					for (var y = 0; y < subElements.length; y++) {
 						var format = subElements[y].getAttribute('format');
@@ -64,6 +67,8 @@
 	              $output = "0";
 	          }
 						subElements[y].innerHTML = Math.abs($output);
+
+            /** If event is passed, display 'Temps Ecoulé', else 'Temps Restant' */
 						if ($output < 0)
 							elements[i].querySelectorAll('.labelTimeOut')[0].innerHTML = "Temps Ecoulé";
 						else
@@ -71,6 +76,7 @@
 					}
         }
       }
+
       /** Update Time every second and run in first **/
       setInterval(time, 1000);
       time();

@@ -34,6 +34,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+      /* Make an Event Object and Transform it to a form */
 			$event = new Event();
       $form = $this->createFormBuilder($event)
 				->add('name')
@@ -42,6 +43,8 @@ class DefaultController extends Controller
 				->getForm();
 
       $form->handleRequest($request);
+
+      /* If Form is Submitted and Valid, persist it into DB */
       if ($form->isSubmitted() && $form->isValid()) {
 				$task = $form->getData();
 
@@ -64,6 +67,7 @@ class DefaultController extends Controller
      */
     public function eventsAction(Request $request)
     {
+      /* List All Events **/
 			$events =  $this->getDoctrine()
         ->getRepository('RedkeetBundle:Event')
         ->findAll();
